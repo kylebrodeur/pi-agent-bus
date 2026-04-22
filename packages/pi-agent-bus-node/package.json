@@ -1,0 +1,39 @@
+{
+  "name": "pi-agent-bus-node",
+  "version": "0.1.0",
+  "description": "Agent orchestration runtime with MessageBus pub/sub coordination for the Pi coding agent ecosystem",
+  "homepage": "https://github.com/kylebrodeur/pi-agent-bus-node#readme",
+  "bugs": {
+    "url": "https://github.com/kylebrodeur/pi-agent-bus-node/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Kyle Brodeur",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kylebrodeur/pi-agent-bus-node.git"
+  },
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-agent",
+    "agent",
+    "orchestration",
+    "coordination",
+    "messaging",
+    "pubsub",
+    "node",
+    "bus",
+    "event-driven"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
