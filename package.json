@@ -12,8 +12,5 @@
   },
   "keywords": [],
   "author": "Kyle Brodeur",
-  "license": "MIT",
-  "workspaces": [
-    "packages/*"
-  ]
+  "license": "MIT"
 }
