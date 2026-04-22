@@ -1,0 +1,19 @@
+{
+  "name": "pi-agent-bus-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for Pi Agent Bus components: Core library and Pi Integration Bridge",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm -r build",
+    "clean": "pnpm -r clean",
+    "test": "pnpm -r test",
+    "install:bridge": "cd packages/pi-agent-bus-bridge && pnpm install && cd ../.. && ln -s $(pwd)/packages/pi-agent-bus-bridge /home/kylebrodeur/projects/microfactory/.pi/extensions/pi-agent-bus-bridge"
+  },
+  "keywords": [],
+  "author": "Kyle Brodeur",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ]
+}
