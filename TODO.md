@@ -31,6 +31,58 @@ This document outlines the immediate tasks and considerations for continuing dev
     *   If not, document how the bridge might need to specifically interact with the `pi-context` extension's API (if different from `pi.tools`).
     *   *Task*: Verify `pi-context` tool access and update bridge config/docs as needed.
 
+## ✅ Phase 1b: Package Review & Testing Strategy (COMPLETED)
+
+### `pi-agent-bus-node` Review Summary
+
+**Completeness: 8/10**
+- ✅ MessageBus: Full pub/sub with history, unsubscribe, async listener support
+- ✅ Agent: Base class with broadcast, direct messaging, LLM integration, Pi tool invocation via bridge
+- ✅ TaskQueue: Full task lifecycle (add, claim, complete, fail, guard checks)
+- ✅ LLMProvider: Abstract interface + DummyLLMProvider for testing
+- ✅ Index exports: Clean barrel export
+
+**Gaps Found:**
+1. 🔄 **No tests existed** - Created 4 test suites (MessageBus, Agent, TaskQueue, LLMProvider)
+2. 🔄 **No Jest config** - Added jest.config.js, updated package.json with test scripts + deps
+3. ⚠️ **No error handling** for malformed message payloads in MessageBus
+4. ⚠️ **No message history limits** - could cause memory leaks in long-running agents
+5. ⚠️ **invokePiTool timeout** not cancellable after cleanup
+6. ⚠️ **Agent config validation** missing - accepts any object
+
+**Test Coverage:**
+- Unit tests for all core classes
+- Integration test stubs for bridge (require live Pi environment)
+- Jest + ts-jest configured
+
+### `pi-agent-bus-bridge` Review Summary
+
+**Completeness: 7/10**
+- ✅ Config loading from file
+- ✅ Empty-config startup
+- ✅ Tool discovery (/pi-agent-bus tools discover)
+- ✅ Runtime config management (add/remove/default/secure)
+- ✅ Preset configs (essential, secure)
+- ✅ String template messageBuilder support
+- ✅ TypeScript types for pi global
+
+**Gaps Found:**
+1. 🔄 **No tests existed** - Created 1 integration test suite (bridge.test.ts)
+2. 🔄 **No Jest config** - Added jest.config.js, updated package.json
+3. ⚠️ **No config validation** - accepts any JSON without schema check
+4. ⚠️ **No graceful degradation** - bridge code tries `pi.log.error` before checking if pi exists
+5. ⚠️ **No tool existence validation** - config can reference non-existent tools
+6. ⚠️ **Singleton MessageBus** concern is documented but not enforced
+7. ⚠️ **Integration tests skipped** - require live Pi environment
+
+**Documentation Gaps:**
+- Package READMEs still reference `pi-agent-node-bus` (should be `pi-agent-bus-node`)
+- No API docs for MessageBus/Agent public methods
+- No example agent implementations
+- No troubleshooting guide for bridge installation
+
+---
+
 ## 🛠️ Phase 2: Testing & Development (From Monorepo Root)
 
 1.  **Test `pi-agent-bus-node` Core Functionality**:
