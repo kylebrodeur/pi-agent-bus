@@ -1,7 +1,10 @@
-/// <reference path="types/pi.d.ts" />
 import { MessageBus, Message } from 'pi-agent-bus-node';
+import { BridgeAgentManager } from './AgentManager';
+import { AuditTool } from './AuditTool';
 
 // This is the singleton MessageBus instance that all pi-agent-bus-node agents will use.
+
+
 // It needs to be consistently instantiated and shared. For a Pi extension,
 // this implies careful management (e.g., using a global context or ensuring
 // the MessageBus constructor handles singletons implicitly).
@@ -121,6 +124,18 @@ pi.log.info('[pi-agent-bus-bridge] Initialized: Bridging pi-agent-bus-node with 
 
 // --- Configuration Management Commands ---
 // Provide slash commands to modify the bridge configuration at runtime
+
+const path = require('path');
+const agentManager = new BridgeAgentManager(
+  path.join(process.cwd(), '.agents'), 
+  path.join(__dirname, '../pi-agent-bus-node/demos')
+);
+const auditTool = new AuditTool(
+  path.join(process.cwd(), '.agents'),
+  process.cwd()
+);
+
+// Register configuration management slash commands
 
 // Helper function to validate config structure
 function validateConfig(configData: any, source: string): { valid: boolean; errors: string[] } {
@@ -253,6 +268,48 @@ pi.onSlashCommand('/pi-agent-bus tools list', async () => {
   const unconfigured = availableTools.filter(t => !exposed.includes(t));
   return `Current Bridge Configuration:\n\nExposed tools (${exposed.length}):\n${exposed.map(t => `  ✓ ${t}`).join('\n')}\n\nAvailable but unconfigured (${unconfigured.length}):\n${unconfigured.map(t => `  ○ ${t}`).join('\n')}`;
 }, 'List all tools currently exposed to agents via the bridge.');
+
+pi.onSlashCommand('/pi-agent-bus agent demos', async () => {
+  const demos = agentManager.listDemos();
+  if (demos.length === 0) return 'No demo agents available.';
+  return `Available demo agents:\n${demos.map(d => `  - ${d}`).join('\n')}\n\nUse \`/pi-agent-bus agent install <id>\` to install one.`;
+}, 'List all available demo agents.');
+
+pi.onSlashCommand('/pi-agent-bus agent install', async (args: string[]) => {
+  if (args.length === 0) return 'Usage: `/pi-agent-bus agent install <demo-id>`. Demo ID required.';
+  try {
+    return await agentManager.installDemoAgent(args[0]);
+  } catch (e: any) {
+    return `Error installing demo agent: ${e.message}`;
+  }
+}, 'Install a demo agent from the library.');
+
+pi.onSlashCommand('/pi-agent-bus agent create', async (args: string[]) => {
+  if (args.length < 2) {
+    return 'Usage: `/pi-agent-bus agent create <id> <role> [capabilities...]`\nExample: `/pi-agent-bus agent create my-agent "Project Manager" "planning,coordination"`';
+  }
+  
+  const id = args[0];
+  const role = args[1];
+  const capabilities = args[2] ? args[2].split(',') : [];
+
+  try {
+    return await agentManager.createAgent(id, {
+      type: 'ToolTestingAgent', // Defaulting to ToolTestingAgent for now since that's all we have
+      role,
+      capabilities,
+      llm_provider: 'none',
+      llm_model: 'none'
+    });
+  } catch (e: any) {
+    return `Error creating agent: ${e.message}`;
+  }
+}, 'Create a new agent definition (simplified deterministic mode).');
+
+pi.onSlashCommand('/pi-agent-bus analyze', async () => {
+  const report = await auditTool.generateReport();
+  return `PROJECT CAPABILITY REPORT\n\n${JSON.stringify(report, null, 2)}`;
+}, 'Analyze project and project agents to identify gaps and propose new capabilities.');
 
 pi.onSlashCommand('/pi-agent-bus tools add', async (args: string[]) => {
   if (args.length === 0) {

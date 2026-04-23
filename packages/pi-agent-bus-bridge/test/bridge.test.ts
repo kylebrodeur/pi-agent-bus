@@ -3,8 +3,8 @@ import assert from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
 
-// __dirname is dist/test/, so package root is ../..
-const PKG_ROOT = path.join(__dirname, '..', '..');
+// __dirname is test/, so package root is ..
+const PKG_ROOT = path.join(__dirname, '..');
 
 describe('pi-agent-bus-bridge config', () => {
   it('should have config.json in package root', () => {

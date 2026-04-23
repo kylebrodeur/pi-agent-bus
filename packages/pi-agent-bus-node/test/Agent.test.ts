@@ -2,29 +2,21 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { MessageBus } from '../src/MessageBus';
 import { DummyLLMProvider } from '../src/LLMProvider';
+import { Agent, AgentConfig } from '../src/Agent';
 
-// Create a concrete agent for testing
-class TestAgent {
-  public config: any;
+// Create a concrete agent for testing by extending the base Agent class
+class TestAgent extends Agent {
   public receivedMessages: any[] = [];
   public tickCount = 0;
-  private bus: MessageBus;
-  private llm?: any;
 
-  constructor(config: any, bus: MessageBus, llm?: any) {
-    this.config = config;
-    this.bus = bus;
-    this.llm = llm;
-    this.bus.subscribe(`direct:${this.config.id}`, this.handleMessage.bind(this));
-    this.bus.subscribe('broadcast', this.handleMessage.bind(this));
+  constructor(config: AgentConfig, bus: MessageBus, llm?: any) {
+    super(config, bus, llm);
+    // In the base class, we already subscribe to direct:id and broadcast.
+    // We override handleMessage to capture messages for testing.
   }
 
-  async handleMessage(message: any): Promise<void> {
+  protected async handleMessage(message: any): Promise<void> {
     this.receivedMessages.push(message);
-  }
-
-  async broadcast(topic: string, payload: any): Promise<void> {
-    await this.bus.publish(topic, this.config.id, payload);
   }
 
   async tick(): Promise<void> {
@@ -77,6 +69,7 @@ describe('Agent', () => {
     const listener = new TestAgent({ id: 'listener', role: 'subscriber', capabilities: [] }, bus);
     const sender = new TestAgent({ id: 'sender', role: 'publisher', capabilities: [] }, bus);
     
+    // Subscribe to the specific topic for the test
     bus.subscribe('test-topic', (msg) => {
       if (msg.senderId === 'sender') {
         listener.receivedMessages.push(msg);
@@ -85,11 +78,24 @@ describe('Agent', () => {
     
     await sender.broadcast('test-topic', { data: 'test-data' });
     
-    // Give time for async
+    // Give time for async (MessageBus.publish is async)
     await new Promise(resolve => setTimeout(resolve, 10));
     
     assert.strictEqual(listener.receivedMessages.length, 1);
     assert.deepStrictEqual(listener.receivedMessages[0].payload, { data: 'test-data' });
+  });
+
+  it('should send direct messages to other agents', async () => {
+    const agent1 = new TestAgent({ id: 'agent-1', role: 'sender', capabilities: [] }, bus);
+    const agent2 = new TestAgent({ id: 'agent-2', role: 'receiver', capabilities: [] }, bus);
+    
+    await agent1.sendDirect('agent-2', { text: 'private message' });
+    
+    await new Promise(resolve => setTimeout(resolve, 10));
+    
+    assert.strictEqual(agent2.receivedMessages.length, 1);
+    assert.strictEqual(agent2.receivedMessages[0].payload.text, 'private message');
+    assert.strictEqual(agent2.receivedMessages[0].senderId, 'agent-1');
   });
 
   it('should implement tick', async () => {
@@ -99,10 +105,60 @@ describe('Agent', () => {
     assert.strictEqual(agent.tickCount, 1);
   });
 
-  it('should work with LLM provider', () => {
+  it('should work with LLM provider', async () => {
     const llm = new DummyLLMProvider({ model: 'test' });
-    // Just verify construction with LLM doesn't throw
     const agent = new TestAgent({ id: 'agent-1', role: 'tester', capabilities: [] }, bus, llm);
-    assert.ok(agent);
+    
+    // We need to expose askLLM for testing since it is protected
+    const result = await (agent as any).askLLM('Hello AI');
+    assert.ok(result);
+  });
+
+  it('should invoke Pi tool via bridge', async () => {
+    const agent = new TestAgent({ id: 'agent-1', role: 'tester', capabilities: [] }, bus);
+    
+    // Mock the bridge response
+    bus.subscribe('pi_tool_bridge_requests', async (message: any) => {
+      const { requestId, responseTopic } = message.payload;
+      await bus.publish(responseTopic, 'pi-tool-bridge', { 
+        requestId, 
+        result: 'mocked-tool-result' 
+      });
+    });
+    
+    const result = await (agent as any).invokePiTool('test_tool', { arg1: 'val1' });
+    assert.strictEqual(result, 'mocked-tool-result');
+  });
+
+  it('should handle Pi tool invocation timeout', async () => {
+    const agent = new TestAgent({ id: 'agent-1', role: 'tester', capabilities: [] }, bus);
+    
+    // Do NOT mock the bridge response to trigger timeout
+    try {
+      await (agent as any).invokePiTool('slow_tool', {}, 50); // 50ms timeout
+      assert.fail('Should have timed out');
+    } catch (e: any) {
+      assert.ok(e.message.includes('timed out'));
+    }
+  });
+
+  it('should handle Pi tool invocation error', async () => {
+    const agent = new TestAgent({ id: 'agent-1', role: 'tester', capabilities: [] }, bus);
+    
+    // Mock the bridge to return an error
+    bus.subscribe('pi_tool_bridge_requests', async (message: any) => {
+      const { requestId, responseTopic } = message.payload;
+      await bus.publish(responseTopic, 'pi-tool-bridge', { 
+        requestId, 
+        error: 'Tool execution failed' 
+      });
+    });
+    
+    try {
+      await (agent as any).invokePiTool('error_tool', {});
+      assert.fail('Should have thrown error');
+    } catch (e: any) {
+      assert.strictEqual(e.message, 'Tool execution failed');
+    }
   });
 });

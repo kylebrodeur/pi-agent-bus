@@ -5,15 +5,15 @@
   "description": "Pi Extension to bridge pi-agent-bus-node agents with pi.tools and pi-link",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "test": "node --test dist/test/*.test.js",
-    "test:watch": "node --test --watch dist/test/*.test.js"
-  },
-  "dependencies": {
-    "pi-agent-bus-node": "workspace:*"
+    "build": "tsup",
+    "test": "tsx --test test/*.test.ts",
+    "test:watch": "tsx --test --watch test/*.test.ts"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "pi-agent-bus-node": "workspace:*",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.0.0"
   }
 }
