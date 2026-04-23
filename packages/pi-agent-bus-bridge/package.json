@@ -1,8 +1,8 @@
 {
-  "name": "pi-agent-node-bus-bridge",
+  "name": "pi-agent-bus-bridge",
   "version": "0.1.0",
   "type": "commonjs",
-  "description": "Pi Extension to bridge pi-agent-node-bus agents with pi.tools and pi-link",
+  "description": "Pi Extension to bridge pi-agent-bus-node agents with pi.tools and pi-link",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

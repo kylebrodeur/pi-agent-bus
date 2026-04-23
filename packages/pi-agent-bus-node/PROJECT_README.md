@@ -1,4 +1,4 @@
-# pi-agent-node-bus
+# pi-agent-bus-node
 
 [![npm version](https://badge.fury.io/js/%40microfactory%2Fagent-node-bus.svg)](https://badge.fury.io/js/%40microfactory%2Fagent-node-bus)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -22,11 +22,11 @@ This creates O(n) scaling instead of O(n²) - critical for large-scale simulatio
 ## Quick Start
 
 ```bash
-npm install pi-agent-node-bus
+npm install pi-agent-bus-node
 ```
 
 ```typescript
-import { MessageBus, Agent } from 'pi-agent-node-bus';
+import { MessageBus, Agent } from 'pi-agent-bus-node';
 
 // Create the "environment"
 const bus = new MessageBus();
@@ -54,9 +54,9 @@ bus.subscribe('I_AM HERE', (message) => {
 ## Installation
 
 ```bash
-npm install pi-agent-node-bus
-pnpm add pi-agent-node-bus
-yarn add pi-agent-node-bus
+npm install pi-agent-bus-node
+pnpm add pi-agent-bus-node
+yarn add pi-agent-bus-node
 ```
 
 ## API Reference
@@ -85,7 +85,7 @@ const history = bus.getHistory('JOB_PHEROMONE');
 The base class for all agents. Extend this to create your own agents.
 
 ```typescript
-import { Agent, MessageBus } from 'pi-agent-node-bus';
+import { Agent, MessageBus } from 'pi-agent-bus-node';
 
 class CustomAgent extends Agent {
   protected async handleMessage(message: Message): Promise<void> {
@@ -110,7 +110,7 @@ const agent = new CustomAgent({
 Abstract interface for connecting LLMs to agents.
 
 ```typescript
-import { LLMProvider } from 'pi-agent-node-bus';
+import { LLMProvider } from 'pi-agent-bus-node';
 
 class OllamaProvider extends LLMProvider {
   async prompt(text: string): Promise<string> {

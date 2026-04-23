@@ -1,7 +1,7 @@
 /// <reference path="types/pi.d.ts" />
 import { MessageBus, Message } from 'pi-agent-bus-node';
 
-// This is the singleton MessageBus instance that all pi-agent-node-bus agents will use.
+// This is the singleton MessageBus instance that all pi-agent-bus-node agents will use.
 // It needs to be consistently instantiated and shared. For a Pi extension,
 // this implies careful management (e.g., using a global context or ensuring
 // the MessageBus constructor handles singletons implicitly).
@@ -48,7 +48,7 @@ const config: BridgeConfig = {
   busToPiLinkMappings: []
 };
 
-// --- Pi Tool Bridging: Inbound requests from pi-agent-node-bus agents ---
+// --- Pi Tool Bridging: Inbound requests from pi-agent-bus-node agents ---
 bus.subscribe('pi_tool_bridge_requests', async (message: Message) => {
   const { requestId, agentId, toolName, args, responseTopic } = message.payload;
 
@@ -117,10 +117,86 @@ config.busToPiLinkMappings.forEach(mapping => {
   });
 });
 
-pi.log.info('[pi-agent-node-bus-bridge] Initialized: Bridging pi-agent-node-bus with Pi tools and pi-link.');
+pi.log.info('[pi-agent-bus-bridge] Initialized: Bridging pi-agent-bus-node with Pi tools and pi-link.');
 
 // --- Configuration Management Commands ---
 // Provide slash commands to modify the bridge configuration at runtime
+
+// Helper function to validate config structure
+function validateConfig(configData: any, source: string): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  if (!configData || typeof configData !== 'object') {
+    errors.push(`${source}: config must be an object`);
+    return { valid: false, errors };
+  }
+
+  // Validate exposedPiTools
+  if ('exposedPiTools' in configData) {
+    if (!Array.isArray(configData.exposedPiTools)) {
+      errors.push(`${source}: exposedPiTools must be an array`);
+    } else {
+      for (let i = 0; i < configData.exposedPiTools.length; i++) {
+        if (typeof configData.exposedPiTools[i] !== 'string') {
+          errors.push(`${source}: exposedPiTools[${i}] must be a string`);
+        }
+      }
+    }
+  }
+
+  // Validate piLinkEventMappings
+  if ('piLinkEventMappings' in configData) {
+    if (!Array.isArray(configData.piLinkEventMappings)) {
+      errors.push(`${source}: piLinkEventMappings must be an array`);
+    } else {
+      for (let i = 0; i < configData.piLinkEventMappings.length; i++) {
+        const mapping = configData.piLinkEventMappings[i];
+        if (!mapping || typeof mapping !== 'object') {
+          errors.push(`${source}: piLinkEventMappings[${i}] must be an object`);
+          continue;
+        }
+        if (typeof mapping.slashCommand !== 'string') {
+          errors.push(`${source}: piLinkEventMappings[${i}].slashCommand must be a string`);
+        }
+        if (typeof mapping.busTopic !== 'string') {
+          errors.push(`${source}: piLinkEventMappings[${i}].busTopic must be a string`);
+        }
+        if (typeof mapping.description !== 'string') {
+          errors.push(`${source}: piLinkEventMappings[${i}].description must be a string`);
+        }
+        if (mapping.payloadMap !== undefined && typeof mapping.payloadMap !== 'object') {
+          errors.push(`${source}: piLinkEventMappings[${i}].payloadMap must be an object`);
+        }
+      }
+    }
+  }
+
+  // Validate busToPiLinkMappings
+  if ('busToPiLinkMappings' in configData) {
+    if (!Array.isArray(configData.busToPiLinkMappings)) {
+      errors.push(`${source}: busToPiLinkMappings must be an array`);
+    } else {
+      for (let i = 0; i < configData.busToPiLinkMappings.length; i++) {
+        const mapping = configData.busToPiLinkMappings[i];
+        if (!mapping || typeof mapping !== 'object') {
+          errors.push(`${source}: busToPiLinkMappings[${i}] must be an object`);
+          continue;
+        }
+        if (typeof mapping.busTopic !== 'string') {
+          errors.push(`${source}: busToPiLinkMappings[${i}].busTopic must be a string`);
+        }
+        if (mapping.messageBuilder !== undefined && typeof mapping.messageBuilder !== 'string') {
+          errors.push(`${source}: busToPiLinkMappings[${i}].messageBuilder must be a string`);
+        }
+        if (mapping.piLinkTarget !== undefined && typeof mapping.piLinkTarget !== 'string') {
+          errors.push(`${source}: busToPiLinkMappings[${i}].piLinkTarget must be a string`);
+        }
+      }
+    }
+  }
+
+  return { valid: errors.length === 0, errors };
+}
 
 // Helper function to reload config from file
 function loadConfigFromFile(): BridgeConfig {
@@ -130,6 +206,14 @@ function loadConfigFromFile(): BridgeConfig {
     const configPath = path.join(__dirname, 'config.json');
     if (fs.existsSync(configPath)) {
       const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      
+      const validation = validateConfig(configData, 'config.json');
+      if (!validation.valid) {
+        pi.log.error(`[PiBridge] Invalid config.json:\n${validation.errors.map(e => `  - ${e}`).join('\n')}`);
+        pi.log.warn('[PiBridge] Falling back to default config');
+        return config;
+      }
+
       return {
         exposedPiTools: configData.exposedPiTools || PRESETS.essential,
         piLinkEventMappings: configData.piLinkEventMappings || [],
@@ -220,8 +304,8 @@ if (initialConfig.exposedPiTools && initialConfig.exposedPiTools.length > 0) {
 
 // --- IMPORTANT: Singleton MessageBus Management ---
 // This is a conceptual bridge. In a real Pi setup, ensuring `bus` is the
-// *same singleton instance* that `pi-agent-node-bus` agents connect to is critical.
-// This might involve pi-agent-node-bus providing a way to inject a bus instance,
+// *same singleton instance* that `pi-agent-bus-node` agents connect to is critical.
+// This might involve pi-agent-bus-node providing a way to inject a bus instance,
 // or the Pi runtime managing a global singleton context for such shared resources.
 // For now, assume this `bus` instance can receive messages from spawned agents.
 // A concrete solution might involve a shared socket, named pipe, or a process-managed

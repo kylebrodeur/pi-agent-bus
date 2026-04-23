@@ -71,4 +71,47 @@ describe('MessageBus', () => {
     
     assert.strictEqual(messages.length, 0);
   });
+
+  it('should enforce history limit', async () => {
+    const bus = new MessageBus(3);
+    
+    await bus.publish('topic-a', 'sender-1', { id: 1 });
+    await bus.publish('topic-a', 'sender-2', { id: 2 });
+    await bus.publish('topic-a', 'sender-3', { id: 3 });
+    assert.strictEqual(bus.getHistory().length, 3);
+
+    await bus.publish('topic-a', 'sender-4', { id: 4 });
+    assert.strictEqual(bus.getHistory().length, 3, 'history should be capped at 3');
+
+    const history = bus.getHistory();
+    assert.strictEqual(history[0].payload.id, 2);
+    assert.strictEqual(history[2].payload.id, 4);
+  });
+
+  it('should allow unlimited history with limit 0', async () => {
+    const bus = new MessageBus(0);
+    
+    for (let i = 0; i < 100; i++) {
+      await bus.publish('topic-a', 'sender', { id: i });
+    }
+    
+    assert.strictEqual(bus.getHistory().length, 100);
+  });
+
+  it('should allow adjusting history limit', async () => {
+    const bus = new MessageBus(10);
+    
+    for (let i = 0; i < 10; i++) {
+      await bus.publish('topic-a', 'sender', { id: i });
+    }
+    
+    bus.setHistoryLimit(5);
+    assert.strictEqual(bus.getHistory().length, 5);
+    assert.strictEqual(bus.getHistoryLimit(), 5);
+  });
+
+  it('should have default history limit of 10000', () => {
+    const bus = new MessageBus();
+    assert.strictEqual(bus.getHistoryLimit(), 10000);
+  });
 });

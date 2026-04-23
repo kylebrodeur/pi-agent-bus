@@ -10,7 +10,7 @@
 
 2. **Update remote and push** (run in agent-node-bus directory):
 ```bash
-git remote set-url origin https://github.com/pi-agent-node-bus.git
+git remote set-url origin https://github.com/pi-agent-bus-node.git
 git push -u origin main
 ```
 
@@ -25,7 +25,7 @@ npm publish --access public
 {
   "name": "microfactory-agent-node-bus",
   "version": "0.1.0",
-  "repository": "https://github.com/pi-agent-node-bus.git"
+  "repository": "https://github.com/pi-agent-bus-node.git"
 }
 ```
 

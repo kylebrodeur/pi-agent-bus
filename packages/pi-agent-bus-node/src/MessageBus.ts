@@ -17,7 +17,12 @@ export type MessageHandler = (message: Message) => void | Promise<void>;
  */
 export class MessageBus {
   private listeners: Map<string, Set<MessageHandler>> = new Map();
-  private history: Message[] = []; // In a real system, limit history size
+  private history: Message[] = [];
+  private maxHistorySize: number;
+
+  constructor(maxHistorySize: number = 10000) {
+    this.maxHistorySize = Math.max(0, maxHistorySize);
+  }
 
   /**
    * Subscribe to a topic
@@ -52,11 +57,34 @@ export class MessageBus {
     };
 
     this.history.push(message);
+    this._trimHistory();
 
     const topicListeners = this.listeners.get(topic);
     if (topicListeners) {
       const promises = Array.from(topicListeners).map(handler => handler(message));
       await Promise.allSettled(promises);
+    }
+  }
+
+  /**
+   * Get max history size
+   */
+  getHistoryLimit(): number {
+    return this.maxHistorySize;
+  }
+
+  /**
+   * Set max history size (0 = unlimited)
+   */
+  setHistoryLimit(limit: number): void {
+    this.maxHistorySize = Math.max(0, limit);
+    this._trimHistory();
+  }
+
+  /** Trim history if over limit */
+  private _trimHistory(): void {
+    if (this.maxHistorySize > 0 && this.history.length > this.maxHistorySize) {
+      this.history = this.history.slice(-this.maxHistorySize);
     }
   }
 
