@@ -1,4 +1,5 @@
-import { MessageBus, Message } from 'pi-agent-node-bus';
+/// <reference path="types/pi.d.ts" />
+import { MessageBus, Message } from 'pi-agent-bus-node';
 
 // This is the singleton MessageBus instance that all pi-agent-node-bus agents will use.
 // It needs to be consistently instantiated and shared. For a Pi extension,
@@ -22,47 +23,29 @@ interface BridgeConfig {
   }[];
 }
 
-// --- Default Configuration (can be overridden via Pi settings) ---
-const config: BridgeConfig = {
-  exposedPiTools: [
-    // pi-qmd-ledger (assuming these are available via pi.tools)
+// Default presets for configuration
+const PRESETS = {
+  essential: [
     'append_ledger', 'query_ledger', 'describe_ledger', 'ledger_stats',
-    // pi-model-router (assuming these are available via pi.tools)
     'route_model',
-    // pi-context (assuming these are available via pi.tools)
     'context_tag', 'context_log', 'context_checkout',
-    // pi-link (for agents to send pi-link messages)
     'link_send', 'link_prompt', 'link_list',
-    // 1password tools (if agents need secure access, assuming available via pi.tools)
     'op_get_secret', 'op_load_env',
-    // General Pi tools that might be useful
     'read', 'bash', 'write', 'edit'
   ],
-  piLinkEventMappings: [
-    {
-      slashCommand: '/start-agent-workflow',
-      busTopic: 'orchestration_commands',
-      description: 'Starts a complex agent workflow by sending command to MessageBus.',
-      payloadMap: { 'args.0': 'workflowId', 'args.1': 'context' }
-    },
-    {
-      slashCommand: '/agent-message',
-      busTopic: 'agent_messages_from_user',
-      description: 'Sends a direct message from the user to the MessageBus for agents.',
-      payloadMap: { 'args.0': 'message' }
-    }
-  ],
-  busToPiLinkMappings: [
-    {
-      busTopic: 'agent_workflow_updates', // Agents broadcast updates here
-      messageBuilder: (payload: any) => `Agent Workflow Update [${payload.workflowId}]: ${payload.status}`
-    },
-    {
-      busTopic: 'agent_alert_critical', // Agents broadcast critical alerts
-      piLinkTarget: '*', // Broadcast to all terminals by default
-      messageBuilder: (payload: any) => `CRITICAL AGENT ALERT from ${payload.agentId}: ${payload.message}`
-    }
+  secure: [
+    'append_ledger', 'query_ledger', 'describe_ledger',
+    'context_tag', 'context_log',
+    'link_send',
+    'read'
   ]
+};
+
+// --- Default Configuration (starts empty; use config.json or commands to populate) ---
+const config: BridgeConfig = {
+  exposedPiTools: [],
+  piLinkEventMappings: [],
+  busToPiLinkMappings: []
 };
 
 // --- Pi Tool Bridging: Inbound requests from pi-agent-node-bus agents ---
@@ -73,14 +56,14 @@ bus.subscribe('pi_tool_bridge_requests', async (message: Message) => {
   let error: string | undefined;
 
   // Basic validation and security check for exposed tools
-  if (!pi || !pi.tools || !pi.tools[toolName]) {
+  if (!pi.tools[toolName]) {
     error = `Pi environment or tool '${toolName}' not found.`;
   } else if (!config.exposedPiTools.includes(toolName)) {
     error = `Tool '${toolName}' is not configured to be exposed by the bridge for security/control.`;
   } else {
     try {
-      pi.log.info(`[PiBridge] Agent ${agentId} invoking pi.tools.${toolName}(${JSON.stringify(args)})`);
-      result = await pi.tools[toolName](args);
+      pi.tools[toolName](args);
+      pi.log.info(`[PiBridge] Agent ${agentId} invoking pi.tools.${toolName}`);
     } catch (e: any) {
       error = e.message;
       pi.log.error(`[PiBridge] Error invoking pi.tools.${toolName} for agent ${agentId}: ${error}`);
@@ -103,8 +86,6 @@ config.piLinkEventMappings.forEach(mapping => {
           if (args[index] !== undefined) {
             payload[target] = args[index];
           }
-        } else {
-            // Future: handle other message parts from rawMessage if needed
         }
       });
     }
@@ -113,11 +94,11 @@ config.piLinkEventMappings.forEach(mapping => {
       command: mapping.slashCommand,
       originalArgs: args,
       payload: payload,
-      sourceTerminalId: senderId || pi.terminal.id // Use senderId from pi-link if available
+      sourceTerminalId: senderId || pi.terminal.id
     });
     pi.log.info(`[PiBridge] '/${mapping.slashCommand}' translated to MessageBus topic '${mapping.busTopic}'`);
     return `Agent workflow triggered on MessageBus topic '${mapping.busTopic}' with payload: ${JSON.stringify(payload)}`;
-  }, mapping.description); // Add description for Pi's help system
+  }, mapping.description);
 });
 
 // --- pi-link Integration (Outbound: MessageBus event -> Pi-link message) ---
@@ -126,7 +107,7 @@ config.busToPiLinkMappings.forEach(mapping => {
     try {
       const messageContent = mapping.messageBuilder ? mapping.messageBuilder(message.payload) : JSON.stringify(message.payload);
       await pi.tools.link_send({
-        to: mapping.piLinkTarget || '*', // Default to broadcast if no specific target
+        to: mapping.piLinkTarget || '*',
         message: messageContent
       });
       pi.log.info(`[PiBridge] Message from '${mapping.busTopic}' sent via pi-link.`);
@@ -137,6 +118,105 @@ config.busToPiLinkMappings.forEach(mapping => {
 });
 
 pi.log.info('[pi-agent-node-bus-bridge] Initialized: Bridging pi-agent-node-bus with Pi tools and pi-link.');
+
+// --- Configuration Management Commands ---
+// Provide slash commands to modify the bridge configuration at runtime
+
+// Helper function to reload config from file
+function loadConfigFromFile(): BridgeConfig {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const configPath = path.join(__dirname, 'config.json');
+    if (fs.existsSync(configPath)) {
+      const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      return {
+        exposedPiTools: configData.exposedPiTools || PRESETS.essential,
+        piLinkEventMappings: configData.piLinkEventMappings || [],
+        busToPiLinkMappings: configData.busToPiLinkMappings || []
+      };
+    }
+  } catch (e: any) {
+    pi.log.warn(`[PiBridge] Error loading config from file: ${e.message}`);
+  }
+  return config;
+}
+
+// Helper function to save config to file
+function saveConfigToFile(newConfig: BridgeConfig): void {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const configPath = path.join(__dirname, 'config.json');
+    fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+    pi.log.info(`[PiBridge] Configuration saved to ${configPath}`);
+  } catch (e: any) {
+    pi.log.error(`[PiBridge] Error saving config to file: ${e.message}`);
+  }
+}
+
+// Helper function to update config and notify bridge
+function updateConfig(newConfig: BridgeConfig): void {
+  Object.assign(config, newConfig);
+  saveConfigToFile(config);
+  pi.log.info(`[PiBridge] Configuration updated. Exposed tools: ${config.exposedPiTools.length}`);
+}
+
+// Register configuration management slash commands
+pi.onSlashCommand('/pi-agent-bus tools list', async () => {
+  const availableTools = Object.keys(pi.tools || {});
+  const exposed = config.exposedPiTools;
+  const unconfigured = availableTools.filter(t => !exposed.includes(t));
+  return `Current Bridge Configuration:\n\nExposed tools (${exposed.length}):\n${exposed.map(t => `  ✓ ${t}`).join('\n')}\n\nAvailable but unconfigured (${unconfigured.length}):\n${unconfigured.map(t => `  ○ ${t}`).join('\n')}`;
+}, 'List all tools currently exposed to agents via the bridge.');
+
+pi.onSlashCommand('/pi-agent-bus tools add', async (args: string[]) => {
+  if (args.length === 0) {
+    return 'Usage: `/pi-agent-bus tools add <tool-name>`. Tool name required.';
+  }
+  const toolName = args[0];
+  if (!config.exposedPiTools.includes(toolName)) {
+    config.exposedPiTools.push(toolName);
+    updateConfig(config);
+    return `Tool '${toolName}' added to bridge configuration.`;
+  }
+  return `Tool '${toolName}' is already in the configuration.`;
+}, 'Add a tool to the bridge configuration (e.g., `/pi-agent-bus tools add append_ledger`).');
+
+pi.onSlashCommand('/pi-agent-bus tools remove', async (args: string[]) => {
+  if (args.length === 0) {
+    return 'Usage: `/pi-agent-bus tools remove <tool-name>`. Tool name required.';
+  }
+  const toolName = args[0];
+  const index = config.exposedPiTools.indexOf(toolName);
+  if (index > -1) {
+    config.exposedPiTools.splice(index, 1);
+    updateConfig(config);
+    return `Tool '${toolName}' removed from bridge configuration.`;
+  }
+  return `Tool '${toolName}' is not in the configuration.`;
+}, 'Remove a tool from the bridge configuration (e.g., `/pi-agent-bus tools remove read`).');
+
+pi.onSlashCommand('/pi-agent-bus tools default', async () => {
+  config.exposedPiTools = [...PRESETS.essential];
+  updateConfig(config);
+  return `Bridge configuration reset to 'essential' preset with ${config.exposedPiTools.length} tools.`;
+}, 'Reset bridge configuration to essential tools preset.');
+
+pi.onSlashCommand('/pi-agent-bus tools secure', async () => {
+  config.exposedPiTools = [...PRESETS.secure];
+  updateConfig(config);
+  return `Bridge configuration reset to 'secure' preset with ${config.exposedPiTools.length} tools.`;
+}, 'Reset bridge configuration to minimal secure preset.');
+
+// Load initial config from file if it exists
+const initialConfig = loadConfigFromFile();
+if (initialConfig.exposedPiTools && initialConfig.exposedPiTools.length > 0) {
+  config.exposedPiTools = initialConfig.exposedPiTools;
+  config.piLinkEventMappings = initialConfig.piLinkEventMappings;
+  config.busToPiLinkMappings = initialConfig.busToPiLinkMappings;
+  pi.log.info(`[PiBridge] Loaded configuration from config.json: ${config.exposedPiTools.length} tools exposed`);
+}
 
 // --- IMPORTANT: Singleton MessageBus Management ---
 // This is a conceptual bridge. In a real Pi setup, ensuring `bus` is the

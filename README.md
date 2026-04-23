@@ -48,6 +48,41 @@ After creating the symlink, restart your Pi terminal for the new extension to be
 
 The `pi-agent-bus-bridge` extension reads its configuration from a `config.json` file placed next to its `index.ts`. This configuration defines which `pi.tools` are exposed to agents and how `pi-link` messages are mapped to `MessageBus` events.
 
+#### Quick Start (Interactive Configuration)
+
+Upon initial setup, no tools will be exposed to agents. You can interactively configure tools using Pi slash commands:
+
+```bash
+# List current tools
+/pi-agent-bus tools list
+
+# Add essential tools
+/pi-agent-bus tools default
+
+# Or add tools individually
+/pi-agent-bus tools add append_ledger
+/pi-agent-bus tools add query_ledger
+
+# Review and adjust
+/pi-agent-bus tools list
+
+# Remove tools if needed
+/pi-agent-bus tools remove read
+
+# Reset to secure defaults
+/pi-agent-bus tools secure
+```
+
+**Note:** If no `config.json` is present, the bridge will initialize with an empty tool list, requiring you to add tools interactively or create a configuration file manually.
+
+#### Manual Configuration (Advanced)
+
+For more control, you can manually configure the bridge by creating a `packages/pi-agent-bus-bridge/config.json` file with your desired settings.
+
+**Sample configurations are available:**
+- `config.essential.json` — Recommended starting point with essential tools
+- `config.secure.json` — Minimal secure configuration with most restrictive access
+
 **Create `packages/pi-agent-bus-bridge/config.json`:**
 
 ```json

@@ -24,6 +24,11 @@ This document outlines the immediate tasks and considerations for continuing dev
     *   Customize `exposedPiTools`, `piLinkEventMappings`, and `busToPiLinkMappings` as needed.
     *   *Verification*: Bridge logs (`pi.log.info`) should show it loading tools and mappings.
 
+3.  **Verify `pi-context` Tool Access**:
+    *   Confirm whether `context_tag`, `context_log`, `context_checkout` are directly exposed via `pi.tools` in a live Pi session.
+    *   If not, document how the bridge might need to specifically interact with the `pi-context` extension's API (if different from `pi.tools`).
+    *   *Task*: Verify `pi-context` tool access and update bridge config/docs as needed.
+
 ## 🛠️ Phase 2: Testing & Development (From Monorepo Root)
 
 1.  **Test `pi-agent-bus-node` Core Functionality**:

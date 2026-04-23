@@ -14,6 +14,11 @@ This document defines the roles, capabilities, and operational protocols for age
 
 ## Agent Roles (for `pi-agent-bus` Monorepo Development)
 
+### Configuration Specialist
+- **Primary Goal**: Manage and optimize tool configurations for agents using interactive slash commands and sample configurations.
+- **Required Skills**: `context-management`, familiarity with pi-agent-bus architecture.
+- **Behavior**: Uses `/pi-agent-bus tools` commands to manage exposed tools, maintains security best practices, and recommends appropriate configurations.
+
 ### General Purpose Engineer
 - **Primary Goal**: Feature implementation, bug fixing, and system maintenance within the monorepo packages.
 - **Required Skills**: `context-management`.

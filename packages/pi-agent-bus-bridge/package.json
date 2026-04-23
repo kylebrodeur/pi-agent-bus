@@ -2,9 +2,10 @@
   "name": "pi-agent-node-bus-bridge",
   "version": "0.1.0",
   "description": "Pi Extension to bridge pi-agent-node-bus agents with pi.tools and pi-link",
-  "main": "index.ts",
-  "keywords": ["pi-extension", "pi-package", "pi-agent", "agent", "bridge", "orchestration", "pi-link", "qmd-ledger", "model-router", "context"],
-  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "pi-agent-bus-node": "workspace:*"
   },

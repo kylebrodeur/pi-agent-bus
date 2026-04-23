@@ -1,0 +1,13 @@
+{
+  "exposedPiTools": [
+    "append_ledger",
+    "query_ledger",
+    "describe_ledger",
+    "context_tag",
+    "context_log",
+    "link_send",
+    "read"
+  ],
+  "piLinkEventMappings": [],
+  "busToPiLinkMappings": []
+}
