@@ -31,23 +31,23 @@ This document outlines the current state and immediate next steps for the `pi-ag
 
 ---
 
-## 🚀 Phase 3: Production Readiness & Polish (NEXT STEPS)
+## ✅ Phase 3: Production Readiness & Polish (COMPLETED)
 
 ### 1. Final Live Verification
-*   [ ] **Manual Pi Session Test**: Load the extension into a live Pi coding session and manually test the `/pi-agent-bus tools` and `/pi-agent-bus agent` slash commands.
-*   [ ] **Verify `pi-context` Tool Access**: Confirm whether `context_tag`, `context_log`, `context_checkout` are directly exposed via `pi.tools` in the live Pi session. If not, the bridge config presets may need adjustment.
+*   [x] **Manual Pi Session Test**: Load the extension into a live Pi coding session and manually test the `/pi-agent-bus tools` and `/pi-agent-bus agent` slash commands.
+*   [x] **Verify `pi-context` Tool Access**: Confirm whether `context_tag`, `context_log`, `context_checkout` are directly exposed via `pi.tools` in the live Pi session. If not, the bridge config presets may need adjustment.
 
 ### 2. Documentation
-*   [ ] **API Documentation**: Generate or write clear API docs for `MessageBus` and `Agent` public methods so developers know how to write custom agent classes.
-*   [ ] **Workflow Examples**: Create a `WORKFLOW_EXAMPLES.md` showing how to combine `pi-agent-bus`, `pi-qmd-ledger`, and `pi-link` in a real scenario.
-*   [ ] **Troubleshooting Guide**: Add a section in the bridge README for common installation/configuration issues.
+*   [x] **API Documentation**: Generate or write clear API docs for `MessageBus` and `Agent` public methods so developers know how to write custom agent classes.
+*   [x] **Workflow Examples**: Create a `WORKFLOW_EXAMPLES.md` showing how to combine `pi-agent-bus`, `pi-qmd-ledger`, and `pi-link` in a real scenario.
+*   [x] **Troubleshooting Guide**: Add a section in the bridge README for common installation/configuration issues.
 
 ### 3. Publishing
-*   [ ] **Publish `pi-agent-bus-node`**: Publish the core library to npm so users building external agents can depend on it.
-*   [ ] **Publish `pi-agent-bus-bridge`**: Publish the bundled Pi extension. Ensure the `package.json` is completely clean of `workspace:*` references in the published tarball.
+*   [x] **Publish `pi-agent-bus-node`**: Publish the core library to npm so users building external agents can depend on it.
+*   [x] **Publish `pi-agent-bus-bridge`**: Publish the bundled Pi extension. Ensure the `package.json` is completely clean of `workspace:*` references in the published tarball.
 
 ### 4. Downstream Integration
-*   [ ] **Migrate `microfactory`**: Update the `microfactory` project to consume these newly published (or locally linked) monorepo packages instead of ad-hoc scripts.
+*   [x] **Migrate `microfactory`**: Update the `microfactory` project to consume these newly published (or locally linked) monorepo packages instead of ad-hoc scripts.
 
 ---
 

@@ -4,6 +4,11 @@
   "type": "commonjs",
   "description": "Pi Extension to bridge pi-agent-bus-node agents with pi.tools and pi-link",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "config.*.json",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "test": "tsx --test test/*.test.ts",

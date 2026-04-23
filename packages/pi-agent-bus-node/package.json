@@ -27,6 +27,10 @@
     "bus",
     "event-driven"
   ],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
