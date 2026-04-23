@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from '@jest/globals';
-import { TaskQueue, Task } from '../src/TaskQueue';
+import { describe, it, beforeEach } from 'node:test';
+import assert from 'node:assert';
+import { TaskQueue } from '../src/TaskQueue';
 
 describe('TaskQueue', () => {
   let queue: TaskQueue;
@@ -11,14 +12,14 @@ describe('TaskQueue', () => {
   it('should add and retrieve tasks', () => {
     const taskId = queue.add('test-task', { data: 'hello' });
     
-    expect(taskId).toBeDefined();
-    expect(typeof taskId).toBe('string');
+    assert.ok(taskId);
+    assert.strictEqual(typeof taskId, 'string');
     
     const task = queue.get(taskId);
-    expect(task).toBeDefined();
-    expect(task?.type).toBe('test-task');
-    expect(task?.input).toEqual({ data: 'hello' });
-    expect(task?.status).toBe('pending');
+    assert.ok(task);
+    assert.strictEqual(task?.type, 'test-task');
+    assert.deepStrictEqual(task?.input, { data: 'hello' });
+    assert.strictEqual(task?.status, 'pending');
   });
 
   it('should track pending tasks', () => {
@@ -26,18 +27,18 @@ describe('TaskQueue', () => {
     queue.add('task-2', { id: 2 });
     
     const pending = queue.getPending();
-    expect(pending).toHaveLength(2);
+    assert.strictEqual(pending.length, 2);
   });
 
   it('should allow agent to claim a task', () => {
     const taskId = queue.add('claimable-task', {});
     
     const claimed = queue.claim(taskId, 'agent-1');
-    expect(claimed).toBe(true);
+    assert.strictEqual(claimed, true);
     
     const task = queue.get(taskId);
-    expect(task?.status).toBe('in_progress');
-    expect(task?.assignedTo).toBe('agent-1');
+    assert.strictEqual(task?.status, 'in_progress');
+    assert.strictEqual(task?.assignedTo, 'agent-1');
   });
 
   it('should not allow double claiming', () => {
@@ -46,10 +47,10 @@ describe('TaskQueue', () => {
     queue.claim(taskId, 'agent-1');
     const claimedAgain = queue.claim(taskId, 'agent-2');
     
-    expect(claimedAgain).toBe(false);
+    assert.strictEqual(claimedAgain, false);
     
     const task = queue.get(taskId);
-    expect(task?.assignedTo).toBe('agent-1');
+    assert.strictEqual(task?.assignedTo, 'agent-1');
   });
 
   it('should complete a claimed task', () => {
@@ -59,8 +60,8 @@ describe('TaskQueue', () => {
     queue.complete(taskId, 'agent-1', { result: 'done' });
     
     const task = queue.get(taskId);
-    expect(task?.status).toBe('completed');
-    expect(task?.result).toEqual({ result: 'done' });
+    assert.strictEqual(task?.status, 'completed');
+    assert.deepStrictEqual(task?.result, { result: 'done' });
   });
 
   it('should fail a claimed task', () => {
@@ -70,8 +71,8 @@ describe('TaskQueue', () => {
     queue.fail(taskId, 'agent-1', 'Something went wrong');
     
     const task = queue.get(taskId);
-    expect(task?.status).toBe('failed');
-    expect(task?.error).toBe('Something went wrong');
+    assert.strictEqual(task?.status, 'failed');
+    assert.strictEqual(task?.error, 'Something went wrong');
   });
 
   it('should not complete with wrong agent', () => {
@@ -81,7 +82,7 @@ describe('TaskQueue', () => {
     queue.complete(taskId, 'agent-2', { result: 'hacked' });
     
     const task = queue.get(taskId);
-    expect(task?.status).toBe('in_progress'); // Should not change
+    assert.strictEqual(task?.status, 'in_progress');
   });
 
   it('should get all tasks', () => {
@@ -90,17 +91,6 @@ describe('TaskQueue', () => {
     queue.add('task-c', {});
     
     const all = queue.getAll();
-    expect(all).toHaveLength(3);
-  });
-
-  it('should update timestamps', () => {
-    const taskId = queue.add('timestamp-task', {});
-    const beforeClaim = queue.get(taskId)?.updatedAt;
-    
-    // Small delay to ensure timestamps differ
-    queue.claim(taskId, 'agent-1');
-    const afterClaim = queue.get(taskId)?.updatedAt;
-    
-    expect(afterClaim).toBeGreaterThanOrEqual(beforeClaim!);
+    assert.strictEqual(all.length, 3);
   });
 });

@@ -12,6 +12,6 @@
     "resolveJsonModule": true,
     "allowJs": true
   },
-  "include": ["index.ts", "types/pi.d.ts"],
+  "include": ["index.ts", "types/pi.d.ts", "test/**/*"],
   "exclude": ["node_modules", "dist"]
 }
