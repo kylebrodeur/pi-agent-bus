@@ -12,5 +12,8 @@
   },
   "keywords": [],
   "author": "Kyle Brodeur",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "pi-qmd-ledger": "^0.1.8"
+  }
 }

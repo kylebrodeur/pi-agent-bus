@@ -8,11 +8,11 @@ This document outlines the immediate tasks and considerations for continuing dev
 
 1.  **Monorepo `pnpm install`**:
     *   Run `pnpm install` in the monorepo root (`/home/kylebrodeur/projects/pi-agent-bus/`). This will install all dependencies for both `pi-agent-bus-node` and `pi-agent-bus-bridge` and set up workspace links.
-    *   *Verification*: `ls -la packages/pi-agent-bus-node/node_modules` and `ls -la packages/pi-agent-bus-bridge/node_modules` should show symlinks/installed dependencies.
+    *   ✅ *Verification*: `ls -la packages/pi-agent-bus-node/node_modules` and `ls -la packages/pi-agent-bus-bridge/node_modules` should show symlinks/installed dependencies.
 
 2.  **Build All Packages**:
     *   Run `pnpm -r build` in the monorepo root.
-    *   *Verification*: Both `packages/pi-agent-bus-node/dist` and `packages/pi-agent-bus-bridge/dist` directories should exist and contain compiled JavaScript/TypeScript definition files.
+    *   ✅ *Verification*: Both `packages/pi-agent-bus-node/dist` and `packages/pi-agent-bus-bridge/dist` directories should exist and contain compiled JavaScript/TypeScript definition files.
 
 3.  **Install `pi-agent-bus-bridge` Pi Extension**:
     *   Create a symlink from your Pi's extensions directory to the bridge package within this monorepo.
@@ -20,8 +20,10 @@ This document outlines the immediate tasks and considerations for continuing dev
     *   *Verification*: Restart Pi and check `pi.extensions.list()` for `pi-agent-bus-bridge`.
 
 4.  **Configure `pi-agent-bus-bridge`**:
-    *   Create `packages/pi-agent-bus-bridge/config.json` based on the example provided in the monorepo's `README.md`.
-    *   Customize `exposedPiTools`, `piLinkEventMappings`, and `busToPiLinkMappings` as needed.
+    *   ✅ Create `packages/pi-agent-bus-bridge/config.json` (starts empty).
+    *   ✅ Presets available: `config.essential.json`, `config.secure.json`.
+    *   ✅ Added `/pi-agent-bus tools discover` command to scan `pi.tools` and suggest configs.
+    *   ✅ Added `/pi-agent-bus tools add|remove|default|secure` commands for runtime config.
     *   *Verification*: Bridge logs (`pi.log.info`) should show it loading tools and mappings.
 
 3.  **Verify `pi-context` Tool Access**:
