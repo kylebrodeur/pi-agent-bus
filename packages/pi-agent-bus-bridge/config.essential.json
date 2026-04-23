@@ -7,7 +7,7 @@
     "route_model",
     "context_tag",
     "context_log",
-    "context_checkout",
+    "context_checksum",
     "link_send",
     "link_prompt",
     "link_list",

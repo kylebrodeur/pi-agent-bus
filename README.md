@@ -90,7 +90,7 @@ For more control, you can manually configure the bridge by creating a `packages/
   "exposedPiTools": [
     "append_ledger", "query_ledger", "describe_ledger", "ledger_stats",
     "route_model",
-    "context_tag", "context_log", "context_checkout",
+    "context_tag", "context_log", "context_checksum",
     "link_send", "link_prompt", "link_list",
     "op_get_secret", "op_load_env",
     "read", "bash", "write", "edit", "ls", "grep", "find"
@@ -133,7 +133,7 @@ For more control, you can manually configure the bridge by creating a `packages/
 *   **`exposedPiTools`**: A whitelist of `pi.tools` functions that agents are allowed to invoke via the bridge. This acts as a security and control mechanism.
     *   **`pi-qmd-ledger`**: (`append_ledger`, `query_ledger`, etc.) - Directly expose these for agents to interact with the UCL.
     *   **`pi-model-router`**: (`route_model`) - Allows agents to dynamically select models.
-    *   **`pi-context`**: (`context_tag`, `context_log`, `context_checkout`) - Agents can mark progress or retrieve context from the main Pi environment.
+    *   **`pi-context`**: (`context_tag`, `context_log`, `context_checksum`) - Agents can mark progress or retrieve context from the main Pi environment.
     *   **`pi-link`**: (`link_send`, `link_prompt`, `link_list`) - Agents can send/receive `pi-link` messages to/from other terminals.
     *   **`1password`**: (`op_get_secret`, `op_load_env`) - Securely access secrets.
     *   **General Pi tools**: (`read`, `bash`, `write`, `edit`, `ls`, `grep`, `find`) - Common file/shell operations.

@@ -28,7 +28,7 @@ const PRESETS = {
   essential: [
     'append_ledger', 'query_ledger', 'describe_ledger', 'ledger_stats',
     'route_model',
-    'context_tag', 'context_log', 'context_checkout',
+    'context_tag', 'context_log', 'context_checksum',
     'link_send', 'link_prompt', 'link_list',
     'op_get_secret', 'op_load_env',
     'read', 'bash', 'write', 'edit'
