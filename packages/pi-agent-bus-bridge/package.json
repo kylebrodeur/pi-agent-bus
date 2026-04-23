@@ -1,5 +1,5 @@
 {
-  "name": "pi-agent-bus-bridge",
+  "name": "pi-agent-bus",
   "version": "0.1.0",
   "type": "commonjs",
   "description": "Pi Extension to bridge pi-agent-bus-node agents with pi.tools and pi-link",
