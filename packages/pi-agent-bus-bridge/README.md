@@ -1,6 +1,6 @@
-# `pi-agent-bus-bridge`
+# `pi-agent-bus` (Bridge Extension)
 
-This package provides the Pi Extension bridge for the `pi-agent-bus` monorepo. It connects isolated agent workflows running on `pi-agent-bus-node` to the main Pi execution environment via tools and messaging.
+This package (internally known as `pi-agent-bus-bridge` in the monorepo) provides the Pi Extension bridge for the `pi-agent-bus` ecosystem. It connects isolated agent workflows running on `pi-agent-bus-node` to the main Pi execution environment via tools and messaging.
 
 ## Features
 
@@ -10,7 +10,14 @@ This package provides the Pi Extension bridge for the `pi-agent-bus` monorepo. I
 
 ## Installation
 
-This is designed to run as a Pi extension. Symlink or copy the built `/dist` directory to your `.pi/extensions/` directory.
+### From NPM Registry
+Install the extension directly using the `pi` CLI:
+```bash
+pi install pi-agent-bus
+```
+
+### From Source
+If working within the monorepo, symlink or copy the built `/dist` directory to your `.pi/extensions/` directory.
 
 ## Troubleshooting Guide
 

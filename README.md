@@ -7,27 +7,42 @@ This monorepo contains the core `pi-agent-bus` components for building and orche
 | Package                  | Description                                                                                                                                                                                                                                                                                                      |
 | :----------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pi-agent-bus-node`      | The core library (`npm install pi-agent-bus-node`). Provides the `MessageBus`, `Agent` base class (with `invokePiTool`), `TaskQueue`, and `LLMProvider`. Designed to be isolated and reusable in any Node.js/TypeScript project.                                                                                     |
-| `pi-agent-bus-bridge`    | A Pi extension. This is the **"Pi Integration Layer"** that bridges isolated `pi-agent-bus-node` agents with the `pi` global object and `pi.tools`. It also handles `pi-link` inbound/outbound message translation. This extension *must* run in a Pi terminal's context.                                                |
+| `pi-agent-bus` (Bridge)  | A Pi extension (published as `pi-agent-bus` to NPM). This is the **"Pi Integration Layer"** that bridges isolated `pi-agent-bus-node` agents with the `pi` global object and `pi.tools`. It also handles `pi-link` inbound/outbound message translation. This extension *must* run in a Pi terminal's context.                                                |
 
 ## Getting Started
 
-### 1. Clone the Monorepo
+### Quick Install (For Users)
+
+If you simply want to use the agent bus inside your Pi coding environment, install the extension using the `pi` CLI:
 
 ```bash
-git clone https://github.com/kylebrodeur/pi-agent-bus.git # Assuming a GitHub repo for the monorepo
+pi install pi-agent-bus
+```
+
+*Note: Once installed, use the `/pi-agent-bus tools` slash commands to configure the available tools.*
+
+---
+
+### Development (For Contributors)
+
+The steps below are for developing within the monorepo.
+
+#### 1. Clone the Monorepo
+
+```bash
+git clone https://github.com/kylebrodeur/pi-agent-bus.git
 cd pi-agent-bus
 ```
 
-### 2. Install Monorepo Dependencies
+#### 2. Install Monorepo Dependencies
 
 This will install dependencies for all packages within the monorepo and set up workspace links.
 
 ```bash
 pnpm install
-# or npm install (if using npm workspaces)
 ```
 
-### 3. Install the `pi-agent-bus-bridge` Pi Extension
+#### 3. Install the Local Extension
 
 For Pi to discover and load the `pi-agent-bus-bridge` extension, you need to create a symlink from your Pi's extensions directory to the bridge package within this monorepo.
 
