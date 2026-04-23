@@ -1,0 +1,42 @@
+{
+  "comment": "Progressive Step 2: Ledger + pi-link coordination. Use after installing pi-qmd-ledger and pi-link.",
+  "exposedPiTools": [
+    "append_ledger",
+    "query_ledger",
+    "describe_ledger",
+    "ledger_stats",
+    "link_send",
+    "link_prompt",
+    "link_list"
+  ],
+  "piLinkEventMappings": [
+    {
+      "slashCommand": "/start-agent-workflow",
+      "busTopic": "orchestration_commands",
+      "description": "Starts a complex agent workflow by sending command to MessageBus.",
+      "payloadMap": {
+        "args.0": "workflowId",
+        "args.1": "context"
+      }
+    },
+    {
+      "slashCommand": "/agent-message",
+      "busTopic": "agent_messages_from_user",
+      "description": "Sends a direct message from the user to the MessageBus for agents.",
+      "payloadMap": {
+        "args.0": "message"
+      }
+    }
+  ],
+  "busToPiLinkMappings": [
+    {
+      "busTopic": "agent_workflow_updates",
+      "messageBuilder": "Agent Workflow Update [${payload.workflowId}]: ${payload.status}"
+    },
+    {
+      "busTopic": "agent_alert_critical",
+      "piLinkTarget": "*",
+      "messageBuilder": "CRITICAL AGENT ALERT from ${payload.agentId}: ${payload.message}"
+    }
+  ]
+}

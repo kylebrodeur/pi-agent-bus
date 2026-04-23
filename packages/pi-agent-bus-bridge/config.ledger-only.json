@@ -1,0 +1,11 @@
+{
+  "comment": "Progressive Step 1: Ledger-only. Use after installing pi-qmd-ledger.",
+  "exposedPiTools": [
+    "append_ledger",
+    "query_ledger",
+    "describe_ledger",
+    "ledger_stats"
+  ],
+  "piLinkEventMappings": [],
+  "busToPiLinkMappings": []
+}

@@ -151,7 +151,41 @@ For more control, you can manually configure the bridge by creating a `packages/
 
 ## Development
 
-### Building Packages
+### Progressive Enhancement Configs
+
+The bridge supports starting empty and adding tools as you install extensions:
+
+| Config File | Tools Exposed | Required Extensions |
+|-------------|--------------|---------------------|
+| `config.json` | None | None (safe to load with no extensions) |
+| `config.ledger-only.json` | Ledger CRUD | `pi-qmd-ledger` |
+| `config.with-link.json` | Ledger + pi-link | `pi-qmd-ledger`, `pi-link` |
+| `config.with-model-router.json` | Ledger + link + routing | `pi-qmd-ledger`, `pi-link`, `pi-model-router` |
+| `config.with-context.json` | Ledger + link + routing + context | Above + `pi-context` |
+| `config.essential.json` | Full ecosystem | All core Pi extensions |
+| `config.secure.json` | Minimal safe set | Any subset |
+
+Copy the appropriate preset to `config.json`:
+```bash
+cp packages/pi-agent-bus-bridge/config.with-link.json packages/pi-agent-bus-bridge/config.json
+```
+
+Or use the slash commands after installation:
+```
+/pi-agent-bus tools discover    # See what's available
+/pi-agent-bus tools default   # Load essential preset
+/pi-agent-bus tools add append_ledger
+```
+
+### pi-subagents Migration
+
+`pi-agent-bus` replaces the archived `pi-subagents` package. Key differences:
+- **Pub/sub instead of spawning**: `MessageBus` topics replace `subagent()` process creation
+- **Configurable security**: `exposedPiTools` whitelist instead of all-or-nothing skill injection
+- **Persistent history**: Message history with configurable limits replaces ephemeral agents
+- **Task ownership**: `TaskQueue.claim/complete` replaces unmanaged concurrent execution
+
+See `TODO.md` for the full feature comparison and migration guide.ing Packages
 
 ```bash
 pnpm build # Builds all packages in the monorepo
