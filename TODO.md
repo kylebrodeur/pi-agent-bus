@@ -46,8 +46,13 @@ This document outlines the current state and immediate next steps for the `pi-ag
 *   [x] **Publish `pi-agent-bus-node`**: Publish the core library to npm so users building external agents can depend on it.
 *   [x] **Publish `pi-agent-bus-bridge`**: Publish the bundled Pi extension. Ensure the `package.json` is completely clean of `workspace:*` references in the published tarball.
 
-### 4. Downstream Integration
-*   [x] **Migrate `microfactory`**: Update the `microfactory` project to consume these newly published (or locally linked) monorepo packages instead of ad-hoc scripts.
+---
+
+## 🚀 Phase 4: Post-Launch & Downstream Integration (NEXT STEPS)
+
+### 1. Migrate Downstream Projects
+*   [ ] **Migrate `microfactory`**: Update the `microfactory` project to consume these newly published monorepo packages instead of ad-hoc scripts. Validate the event-driven approach in a real-world scenario.
+*   [ ] **Feedback Loop**: Gather feedback from the `microfactory` integration to identify any missing features in the `pi-agent-bus-node` core or the `pi-agent-bus` bridge.
 
 ---
 

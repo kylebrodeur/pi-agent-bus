@@ -16,7 +16,7 @@ This monorepo contains the core `pi-agent-bus` components for building and orche
 If you simply want to use the agent bus inside your Pi coding environment, install the extension using the `pi` CLI:
 
 ```bash
-pi install pi-agent-bus
+pi install npm:pi-agent-bus
 ```
 
 *Note: Once installed, use the `/pi-agent-bus tools` slash commands to configure the available tools.*

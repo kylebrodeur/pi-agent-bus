@@ -13,7 +13,7 @@ This package (internally known as `pi-agent-bus-bridge` in the monorepo) provide
 ### From NPM Registry
 Install the extension directly using the `pi` CLI:
 ```bash
-pi install pi-agent-bus
+pi install npm:pi-agent-bus
 ```
 
 ### From Source
