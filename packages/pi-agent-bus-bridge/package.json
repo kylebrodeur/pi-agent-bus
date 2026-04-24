@@ -15,6 +15,7 @@
     "test:watch": "tsx --test --watch test/*.test.ts"
   },
   "devDependencies": {
+    "@mariozechner/pi-coding-agent": "^0.70.2",
     "@types/node": "^20.0.0",
     "pi-agent-bus-node": "workspace:*",
     "tsup": "^8.5.1",
