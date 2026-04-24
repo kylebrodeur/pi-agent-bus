@@ -3,6 +3,29 @@
   "version": "0.1.0",
   "type": "commonjs",
   "description": "Pi Extension to bridge pi-agent-bus-node agents with pi.tools and pi-link",
+  "homepage": "https://github.com/kylebrodeur/pi-agent-bus/tree/main/packages/pi-agent-bus-bridge#readme",
+  "bugs": {
+    "url": "https://github.com/kylebrodeur/pi-agent-bus/issues"
+  },
+  "repository": {
+    "type": "git",
+    "directory": "packages/pi-agent-bus-bridge",
+    "url": "git+https://github.com/kylebrodeur/pi-agent-bus.git"
+  },
+  "author": "Kyle Brodeur",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-agent",
+    "agent",
+    "orchestration",
+    "coordination",
+    "messaging",
+    "pubsub",
+    "bus",
+    "event-driven"
+  ],
   "main": "dist/index.js",
   "files": [
     "dist",

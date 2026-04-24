@@ -3,6 +3,28 @@
   "version": "1.0.0",
   "private": true,
   "description": "Monorepo for Pi Agent Bus components: Core library and Pi Integration Bridge",
+  "homepage": "https://github.com/kylebrodeur/pi-agent-bus#readme",
+  "bugs": {
+    "url": "https://github.com/kylebrodeur/pi-agent-bus/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kylebrodeur/pi-agent-bus.git"
+  },
+  "author": "Kyle Brodeur",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-agent",
+    "agent",
+    "orchestration",
+    "coordination",
+    "messaging",
+    "pubsub",
+    "bus",
+    "event-driven"
+  ],
   "main": "index.js",
   "scripts": {
     "build": "pnpm -r build",

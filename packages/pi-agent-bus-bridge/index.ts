@@ -191,17 +191,16 @@ export default function (pi: ExtensionAPI) {
   });
 
   // --- pi-link Integration (Outbound) ---
+  // Note: pi-link tools (link_send, link_prompt, link_list) are provided by the
+  // pi-link extension, not built-in SDK factories. They cannot be executed
+  // programmatically via ExtensionAPI. We queue a slash command as a follow-up
+  // user message, which pi-link will process when the agent is idle.
   config.busToPiLinkMappings.forEach(mapping => {
     bus.subscribe(mapping.busTopic, async (message: Message) => {
       try {
         const messageContent = mapping.messageBuilder ? mapping.messageBuilder(message.payload) : JSON.stringify(message.payload);
-        const tools = getBuiltInTools(process.cwd()) as any;
-        if (tools.link_send) {
-           await tools.link_send.execute('bridge_send', {
-              to: mapping.piLinkTarget || '*',
-              message: messageContent
-           }, new AbortController().signal, () => {});
-        }
+        const target = mapping.piLinkTarget || '*';
+        pi.sendUserMessage(`/link send ${target} ${messageContent}`, { deliverAs: 'followUp' });
       } catch (e: any) {
         console.error(`[PiBridge] Failed to send pi-link message: ${e.message}`);
       }

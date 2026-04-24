@@ -47,14 +47,11 @@ pnpm install
 For Pi to discover and load the `pi-agent-bus-bridge` extension, you need to create a symlink from your Pi's extensions directory to the bridge package within this monorepo.
 
 ```bash
-# Assuming your Pi project is located at /home/kylebrodeur/projects/microfactory
-# And this monorepo is at /home/kylebrodeur/projects/pi-agent-bus
-
 # Create the extensions directory if it doesn't exist
-mkdir -p /home/kylebrodeur/projects/microfactory/.pi/extensions/
+mkdir -p /path/to/your/project/.pi/extensions/
 
 # Create a symlink to the bridge extension
-ln -s $(pwd)/packages/pi-agent-bus-bridge /home/kylebrodeur/projects/microfactory/.pi/extensions/pi-agent-bus-bridge
+ln -s $(pwd)/packages/pi-agent-bus-bridge /path/to/your/project/.pi/extensions/pi-agent-bus-bridge
 ```
 
 After creating the symlink, restart your Pi terminal for the new extension to be loaded.

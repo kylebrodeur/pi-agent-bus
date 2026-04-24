@@ -43,16 +43,49 @@ This document outlines the current state and immediate next steps for the `pi-ag
 *   [x] **Troubleshooting Guide**: Add a section in the bridge README for common installation/configuration issues.
 
 ### 3. Publishing
-*   [x] **Publish `pi-agent-bus-node`**: Publish the core library to npm so users building external agents can depend on it.
-*   [x] **Publish `pi-agent-bus-bridge`**: Publish the bundled Pi extension. Ensure the `package.json` is completely clean of `workspace:*` references in the published tarball.
+*   [ ] **Publish `pi-agent-bus-node`**: Publish the core library to npm so users building external agents can depend on it. Ensure version is bumped to 0.1.0 or higher and `pnpm publish --access public` is used.
+*   [ ] **Publish `pi-agent-bus-bridge`**: Publish the bundled Pi extension as `pi-agent-bus` on npm. Ensure `tsup` bundle is rebuilt, `package.json` is clean of `workspace:*` references in the published tarball, and `pnpm publish --access public` is used.
 
 ---
 
-## 🚀 Phase 4: Post-Launch & Downstream Integration (NEXT STEPS)
+## 🚀 Phase 4: NPM Registry Publishing & Package Verification (NEXT STEPS)
+
+### 1. Pre-Publish Checklist
+*   [ ] **Clean builds**: Run `pnpm -r build` and verify no errors in both packages.
+*   [ ] **Test passes**: Run `pnpm -r test` and ensure all tests pass (31/31 in node, bridge integration tests).
+*   [ ] **Version bump**: Confirm versions are appropriate for initial release (e.g., `0.1.0` or `1.0.0`).
+*   [ ] **Changelog**: Generate or update `CHANGELOG.md` with release notes.
+
+### 2. Publish `pi-agent-bus-node`
+*   [ ] Navigate to `packages/pi-agent-bus-node`.
+*   [ ] Run `pnpm publish --access public` (first-time requires `--access public` for scoped/unscoped public packages).
+*   [ ] Verify package on [npmjs.com/package/pi-agent-bus-node](https://www.npmjs.com/package/pi-agent-bus-node).
+*   [ ] Test install in a fresh project: `npm install pi-agent-bus-node`.
+
+### 3. Publish `pi-agent-bus` (Bridge Extension)
+*   [ ] Navigate to `packages/pi-agent-bus-bridge`.
+*   [ ] Ensure `tsup` produces a clean `dist/index.js` with no `workspace:*` references bundled.
+*   [ ] Run `pnpm publish --access public`.
+*   [ ] Verify package on [npmjs.com/package/pi-agent-bus](https://www.npmjs.com/package/pi-agent-bus).
+*   [ ] Test install via Pi CLI: `pi install npm:pi-agent-bus`.
+
+### 4. Post-Publish Verification
+*   [ ] **Integration test**: Install both packages in a fresh Pi project and verify `/pi-agent-bus tools list` works.
+*   [ ] **End-to-end test**: Run a multi-agent workflow using `pi-agent-bus-node` in a standalone Node.js project.
+*   [ ] **Tag release**: Create a GitHub release tag (`v0.1.0`) with release notes.
+
+---
+
+## 🚀 Phase 5: Post-Launch & Downstream Integration (FUTURE)
 
 ### 1. Migrate Downstream Projects
 *   [ ] **Migrate `microfactory`**: Update the `microfactory` project to consume these newly published monorepo packages instead of ad-hoc scripts. Validate the event-driven approach in a real-world scenario.
 *   [ ] **Feedback Loop**: Gather feedback from the `microfactory` integration to identify any missing features in the `pi-agent-bus-node` core or the `pi-agent-bus` bridge.
+
+### 2. Community & Ecosystem
+*   [ ] **Agent Marketplace**: Publish additional demo agents to the `.agents/` ecosystem.
+*   [ ] **Documentation Site**: Consider a GitHub Pages site or dedicated docs for API reference.
+*   [ ] **CI/CD**: Add GitHub Actions for automated testing, building, and publishing on tag push.
 
 ---
 

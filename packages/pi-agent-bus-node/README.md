@@ -1,9 +1,10 @@
 # `pi-agent-bus-node`
 
-[![npm version](https://badge.fury.io/js/pi-agent-bus-node.svg)](https://www.npmjs.com/package/pi-agent-bus-node)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight, agnostic, event-driven Agent Runtime designed for the **Pi coding agent ecosystem**. This package provides foundational tools for building and orchestrating agents that communicate through a central message bus, enabling scalable and modular multi-agent workflows.
+
+> 📦 Part of the [`pi-agent-bus` monorepo](https://github.com/kylebrodeur/pi-agent-bus). For the Pi extension that bridges this library to the Pi environment, see [`pi-agent-bus` (bridge)](https://github.com/kylebrodeur/pi-agent-bus/tree/main/packages/pi-agent-bus-bridge).
 
 ## Why this exists
 
@@ -206,18 +207,18 @@ class PiModelRouterLLMProvider extends LLMProvider {
 ## Local Development & Testing
 
 ```bash
-# Clone the repository
-git clone https://github.com/kylebrodeur/pi-agent-bus-node.git
-cd pi-agent-bus-node
+# Clone the monorepo
+git clone https://github.com/kylebrodeur/pi-agent-bus.git
+cd pi-agent-bus/packages/pi-agent-bus-node
 
 # Install dependencies
-npm install # or pnpm install / yarn install
+npm install
 
 # Build the project
-npm run build # or pnpm build / yarn build
+npm run build
 
-# Run tests (if available)
-npm test # or pnpm test / yarn test
+# Run tests
+npm test
 ```
 
 ## Detailed Workflow Examples
@@ -231,6 +232,6 @@ For more in-depth examples demonstrating how to build complete multi-agent workf
 ---
 ## Links
 
--   [GitHub Repository](https://github.com/kylebrodeur/pi-agent-bus-node)
--   [NPM Package](https://www.npmjs.com/package/pi-agent-bus-node)
--   [Documentation (Workflow Examples)](./docs/WORKFLOW_EXAMPLES.md)
+- [GitHub Repository (Monorepo)](https://github.com/kylebrodeur/pi-agent-bus)
+- [NPM Package](https://www.npmjs.com/package/pi-agent-bus-node)
+- [Documentation (Workflow Examples)](./docs/WORKFLOW_EXAMPLES.md)

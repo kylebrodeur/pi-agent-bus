@@ -2,9 +2,9 @@
   "name": "pi-agent-bus-node",
   "version": "0.1.0",
   "description": "Agent orchestration runtime with MessageBus pub/sub coordination for the Pi coding agent ecosystem",
-  "homepage": "https://github.com/kylebrodeur/pi-agent-bus-node#readme",
+  "homepage": "https://github.com/kylebrodeur/pi-agent-bus/tree/main/packages/pi-agent-bus-node#readme",
   "bugs": {
-    "url": "https://github.com/kylebrodeur/pi-agent-bus-node/issues"
+    "url": "https://github.com/kylebrodeur/pi-agent-bus/issues"
   },
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -12,7 +12,8 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kylebrodeur/pi-agent-bus-node.git"
+    "directory": "packages/pi-agent-bus-node",
+    "url": "git+https://github.com/kylebrodeur/pi-agent-bus.git"
   },
   "keywords": [
     "pi-package",
