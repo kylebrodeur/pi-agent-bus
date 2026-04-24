@@ -43,36 +43,34 @@ This document outlines the current state and immediate next steps for the `pi-ag
 *   [x] **Troubleshooting Guide**: Add a section in the bridge README for common installation/configuration issues.
 
 ### 3. Publishing
-*   [ ] **Publish `pi-agent-bus-node`**: Publish the core library to npm so users building external agents can depend on it. Ensure version is bumped to 0.1.0 or higher and `pnpm publish --access public` is used.
-*   [ ] **Publish `pi-agent-bus-bridge`**: Publish the bundled Pi extension as `pi-agent-bus` on npm. Ensure `tsup` bundle is rebuilt, `package.json` is clean of `workspace:*` references in the published tarball, and `pnpm publish --access public` is used.
+*   [ ] **Bundle from root**: This monorepo is published as a **single bundled package** from the project root, not as separate packages. The root `package.json` should define the published artifact (`files`, `main`, `types`, etc.). Remove `"private": true` from root `package.json` before publishing.
+*   [ ] **Ensure clean bundle**: Verify `workspace:*` references are resolved and no dev tooling leaks into the published tarball.
+*   [ ] **Manual publish**: Maintainer will run the publish command from root when ready.
 
 ---
 
-## 🚀 Phase 4: NPM Registry Publishing & Package Verification (NEXT STEPS)
+## 🚀 Phase 4: Bundle, Publish & Verify (NEXT STEPS)
+
+> **Note**: This monorepo is published as a **single bundled package** from the project root. The two sub-packages (`pi-agent-bus-node` and `pi-agent-bus-bridge`) are not published separately.
 
 ### 1. Pre-Publish Checklist
 *   [ ] **Clean builds**: Run `pnpm -r build` and verify no errors in both packages.
 *   [ ] **Test passes**: Run `pnpm -r test` and ensure all tests pass (31/31 in node, bridge integration tests).
-*   [ ] **Version bump**: Confirm versions are appropriate for initial release (e.g., `0.1.0` or `1.0.0`).
+*   [ ] **Version bump**: Update the version in **root** `package.json`. Keep sub-package versions in sync for clarity.
+*   [ ] **Remove `"private"`**: Ensure root `package.json` does **not** have `"private": true`.
+*   [ ] **Bundle script**: Confirm or add a `bundle` / `prepack` script in root `package.json` that produces the publishable artifact (e.g., using `tsup` or `pnpm pack` with `publishConfig.directory`).
 *   [ ] **Changelog**: Generate or update `CHANGELOG.md` with release notes.
 
-### 2. Publish `pi-agent-bus-node`
-*   [ ] Navigate to `packages/pi-agent-bus-node`.
-*   [ ] Run `pnpm publish --access public` (first-time requires `--access public` for scoped/unscoped public packages).
-*   [ ] Verify package on [npmjs.com/package/pi-agent-bus-node](https://www.npmjs.com/package/pi-agent-bus-node).
-*   [ ] Test install in a fresh project: `npm install pi-agent-bus-node`.
+### 2. Publish from Root
+*   [ ] **Build**: `pnpm -r build`
+*   [ ] **Verify tarball**: `pnpm pack` (dry-run) and inspect the contents — ensure `workspace:*` is resolved and no dev tools leak in.
+*   [ ] **Publish**: Run `pnpm publish --access public` from the **project root**.
+*   [ ] **Verify package**: Check [npmjs.com/package/pi-agent-bus-monorepo](https://www.npmjs.com) (or whatever the root `name` is).
 
-### 3. Publish `pi-agent-bus` (Bridge Extension)
-*   [ ] Navigate to `packages/pi-agent-bus-bridge`.
-*   [ ] Ensure `tsup` produces a clean `dist/index.js` with no `workspace:*` references bundled.
-*   [ ] Run `pnpm publish --access public`.
-*   [ ] Verify package on [npmjs.com/package/pi-agent-bus](https://www.npmjs.com/package/pi-agent-bus).
-*   [ ] Test install via Pi CLI: `pi install npm:pi-agent-bus`.
-
-### 4. Post-Publish Verification
-*   [ ] **Integration test**: Install both packages in a fresh Pi project and verify `/pi-agent-bus tools list` works.
-*   [ ] **End-to-end test**: Run a multi-agent workflow using `pi-agent-bus-node` in a standalone Node.js project.
-*   [ ] **Tag release**: Create a GitHub release tag (`v0.1.0`) with release notes.
+### 3. Post-Publish Verification
+*   [ ] **Install via Pi CLI**: `pi install npm:pi-agent-bus` and verify `/pi-agent-bus tools list` works.
+*   [ ] **Standalone test**: Install in a fresh Node.js project and verify `require('pi-agent-bus-node')` works.
+*   [ ] **GitHub release**: Create a GitHub release tag (`v0.1.0`) with release notes.
 
 ---
 

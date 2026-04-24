@@ -32,9 +32,6 @@
     "test": "pnpm -r test",
     "install:bridge": "cd packages/pi-agent-bus-bridge && pnpm install && cd ../.. && ln -s $(pwd)/packages/pi-agent-bus-bridge /home/kylebrodeur/projects/microfactory/.pi/extensions/pi-agent-bus-bridge"
   },
-  "keywords": [],
-  "author": "Kyle Brodeur",
-  "license": "MIT",
   "dependencies": {
     "js-yaml": "^4.1.1",
     "pi-qmd-ledger": "^0.1.8"
