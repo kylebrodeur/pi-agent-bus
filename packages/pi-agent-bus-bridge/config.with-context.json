@@ -9,7 +9,6 @@
     "context_tag",
     "context_log",
     "context_checksum",
-    "context_checkout",
     "link_send",
     "link_prompt",
     "link_list"
