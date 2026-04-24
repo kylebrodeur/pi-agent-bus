@@ -1,8 +1,7 @@
 {
-  "name": "pi-agent-bus-monorepo",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Monorepo for Pi Agent Bus components: Core library and Pi Integration Bridge",
+  "name": "pi-agent-bus",
+  "version": "0.1.0",
+  "description": "Pi Extension bridging pi-agent-bus-node agents with pi.tools and pi-link. Includes the core MessageBus, Agent, and TaskQueue runtime.",
   "homepage": "https://github.com/kylebrodeur/pi-agent-bus#readme",
   "bugs": {
     "url": "https://github.com/kylebrodeur/pi-agent-bus/issues"
@@ -25,20 +24,29 @@
     "bus",
     "event-driven"
   ],
-  "main": "index.js",
+  "main": "packages/pi-agent-bus-bridge/dist/index.js",
+  "types": "packages/pi-agent-bus-bridge/dist/index.d.ts",
+  "files": [
+    "packages/pi-agent-bus-bridge/dist",
+    "packages/pi-agent-bus-bridge/config.*.json",
+    "packages/pi-agent-bus-node/dist/src",
+    "README.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "extensions": [
+      "packages/pi-agent-bus-bridge/dist/index.js"
+    ]
+  },
   "scripts": {
     "build": "pnpm -r build",
     "clean": "pnpm -r clean",
     "test": "pnpm -r test",
+    "prepack": "pnpm build",
     "install:bridge": "cd packages/pi-agent-bus-bridge && pnpm install && cd ../.. && ln -s $(pwd)/packages/pi-agent-bus-bridge /home/kylebrodeur/projects/microfactory/.pi/extensions/pi-agent-bus-bridge"
   },
-  "dependencies": {
-    "js-yaml": "^4.1.1",
-    "pi-qmd-ledger": "^0.1.8"
-  },
-  "devDependencies": {
-    "@types/js-yaml": "^4.0.9"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "pnpm": {
     "overrides": {
       "fast-xml-parser": "5.7.0"
