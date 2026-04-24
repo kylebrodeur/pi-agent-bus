@@ -1,4 +1,5 @@
 {
+  "_comment": "SECURE PRESET: Minimal safe set. read is built-in (programmatic). link_send is extension-provided (queued as user message).",
   "exposedPiTools": [
     "append_ledger",
     "query_ledger",

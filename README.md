@@ -142,13 +142,13 @@ For more control, you can manually configure the bridge by creating a `packages/
 
 **Explanation of Configuration Fields:**
 
-*   **`exposedPiTools`**: A whitelist of `pi.tools` functions that agents are allowed to invoke via the bridge. This acts as a security and control mechanism.
-    *   **`pi-qmd-ledger`**: (`append_ledger`, `query_ledger`, etc.) - Directly expose these for agents to interact with the UCL.
-    *   **`pi-model-router`**: (`route_model`) - Allows agents to dynamically select models.
-    *   **`pi-context`**: (`context_tag`, `context_log`, `context_checksum`) - Agents can mark progress or retrieve context from the main Pi environment.
-    *   **`pi-link`**: (`link_send`, `link_prompt`, `link_list`) - Agents can send/receive `pi-link` messages to/from other terminals.
-    *   **`1password`**: (`op_get_secret`, `op_load_env`) - Securely access secrets.
-    *   **General Pi tools**: (`read`, `bash`, `write`, `edit`, `ls`, `grep`, `find`) - Common file/shell operations.
+*   **`exposedPiTools`**: A whitelist of tool names that agents are allowed to request via the `pi_tool_bridge_requests` topic. The bridge controls **access**, but the actual execution depends on the tool type:
+
+    *   **Built-in SDK tools** (`read`, `bash`, `write`, `edit`, `find`, `grep`, `ls`): The bridge executes these **programmatically** (no user interaction required) using `createReadTool`, `createBashTool`, etc. and returns the result directly to the agent.
+
+    *   **Extension tools** (`append_ledger`, `link_send`, `context_tag`, `op_get_secret`, `route_model`, etc.): Pi's `ExtensionAPI` does **not** expose a way for extensions to call another extension's tools programmatically. When an agent requests one of these, the bridge queues a user message (`pi.sendUserMessage('/tool_name ...')`) so the Pi agent can execute it on the agent's behalf. **This means extension tools cannot be called fire-and-forget** — they require the Pi agent to be idle and trigger a new turn.
+
+    This distinction is important for designing agent workflows. Data-processing agents should prefer built-in tools; coordination agents should account for the queuing latency of extension tools.
 
 *   **`piLinkEventMappings`**: Defines Pi slash commands that, when executed, trigger an event on the `MessageBus`.
     *   `slashCommand`: The Pi command (e.g., `/start-agent-workflow`).

@@ -138,8 +138,11 @@ export default function (pi: ExtensionAPI) {
       try {
         const builtInTools = getBuiltInTools(process.cwd()) as any;
         const availableTools = { ...builtInTools }; 
-        // Note: we can only safely execute built in tools programmatically using getBuiltInTools.
-        // Other custom tools would require pi.getTools() or similar, which may not be exposed.
+        // Note: Only built-in SDK tools have factory functions (createReadTool, etc.)
+        // that return an executable AgentTool. Extension tools (pi-context, pi-link,
+        // pi-qmd-ledger, etc.) are NOT accessible programmatically via ExtensionAPI.
+        // When an agent requests one, we fall back to queuing a slash command via
+        // pi.sendUserMessage so the agent can execute it on the next turn.
         if (availableTools[toolName]) {
           result = await availableTools[toolName].execute(
             `bridge_${requestId}`, 

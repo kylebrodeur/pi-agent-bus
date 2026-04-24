@@ -1,5 +1,5 @@
 {
-  "comment": "Progressive Step 4: Full ecosystem except secrets. Adds pi-context management.",
+  "comment": "Progressive Step 4: Full ecosystem except secrets. Adds pi-context management. NOTE: context_tag/context_log/context_checksum and link tools are extension-provided; they trigger via user-message queue, not true programmatic execution.",
   "exposedPiTools": [
     "append_ledger",
     "query_ledger",

@@ -1,5 +1,5 @@
 {
-  "comment": "Progressive Step 1: Ledger-only. Use after installing pi-qmd-ledger.",
+  "comment": "Progressive Step 1: Ledger-only. Use after installing pi-qmd-ledger. NOTE: ledger tools are extension-provided; they queue as user messages, not true programmatic execution.",
   "exposedPiTools": [
     "append_ledger",
     "query_ledger",

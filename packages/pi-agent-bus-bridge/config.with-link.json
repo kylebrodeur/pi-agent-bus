@@ -1,5 +1,5 @@
 {
-  "comment": "Progressive Step 2: Ledger + pi-link coordination. Use after installing pi-qmd-ledger and pi-link.",
+  "comment": "Progressive Step 2: Ledger + pi-link coordination. Use after installing pi-qmd-ledger and pi-link. NOTE: link_send/link_prompt/link_list are extension tools queued as user messages, not executed programmatically.",
   "exposedPiTools": [
     "append_ledger",
     "query_ledger",

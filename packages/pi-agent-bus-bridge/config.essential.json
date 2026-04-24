@@ -1,4 +1,5 @@
 {
+  "_comment": "ESSENTIAL PRESET: Full ecosystem. Built-in tools (read, bash, write, edit) execute programmatically. Extension tools (append_ledger, link_send, route_model, context_tag, etc.) are queued as user messages for the agent to execute on the next turn.",
   "exposedPiTools": [
     "append_ledger",
     "query_ledger",
