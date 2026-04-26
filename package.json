@@ -1,6 +1,6 @@
 {
   "name": "pi-agent-bus",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Pi Extension bridging pi-agent-bus-node agents with pi.tools and pi-link. Includes the core MessageBus, Agent, and TaskQueue runtime.",
   "homepage": "https://github.com/kylebrodeur/pi-agent-bus#readme",
   "bugs": {

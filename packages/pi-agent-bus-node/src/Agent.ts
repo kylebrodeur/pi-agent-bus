@@ -51,7 +51,15 @@ export abstract class Agent {
   }
 
   /**
-   * Perform an LLM-driven decision
+   * Perform an LLM-driven decision in JSON mode
+   */
+  protected async askLLM<T = unknown>(promptText: string, jsonMode?: true): Promise<T | null>;
+  /**
+   * Perform an LLM-driven decision in raw text mode
+   */
+  protected async askLLM(promptText: string, jsonMode: false): Promise<string>;
+  /**
+   * Perform an LLM-driven decision implementation
    */
   protected async askLLM<T = unknown>(promptText: string, jsonMode = true): Promise<T | string | null> {
     if (!this.llm) {

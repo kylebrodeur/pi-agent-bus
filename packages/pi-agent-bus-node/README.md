@@ -155,7 +155,8 @@ const llm = new DummyLLMProvider({ model: 'your_preferred_model' });
 
 // An agent using the LLM for decision making
 const agent = new Agent({ id: 'decider', role: 'planner', capabilities: [] }, bus, llm);
-const decision = await agent.askLLM('What is the best plan for task X?');
+const decision = await agent.askLLM<{ plan: string }>('What is the best plan for task X?');
+// decision is fully typed as { plan: string } | null
 ```
 
 ## Pi Extension Integration
