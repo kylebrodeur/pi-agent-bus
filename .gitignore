@@ -12,4 +12,4 @@ docs/_archive/
 packages/*/node_modules/
 packages/*/dist/
 packages/*/*.log
-*.tgz
+*.tgzdocs/PI-EXTENSION-ISSUES.md
