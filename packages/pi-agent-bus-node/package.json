@@ -1,6 +1,6 @@
 {
   "name": "pi-agent-bus-node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Agent orchestration runtime with MessageBus pub/sub coordination for the Pi coding agent ecosystem",
   "homepage": "https://github.com/kylebrodeur/pi-agent-bus/tree/main/packages/pi-agent-bus-node#readme",
   "bugs": {
