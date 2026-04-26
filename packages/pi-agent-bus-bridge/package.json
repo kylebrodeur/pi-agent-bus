@@ -1,6 +1,6 @@
 {
   "name": "pi-agent-bus",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "commonjs",
   "description": "Pi Extension to bridge pi-agent-bus-node agents with pi.tools and pi-link",
   "homepage": "https://github.com/kylebrodeur/pi-agent-bus/tree/main/packages/pi-agent-bus-bridge#readme",
