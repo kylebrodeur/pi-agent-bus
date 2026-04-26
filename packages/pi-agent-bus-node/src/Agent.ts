@@ -53,7 +53,7 @@ export abstract class Agent {
   /**
    * Perform an LLM-driven decision
    */
-  protected async askLLM(promptText: string, jsonMode = true): Promise<any> {
+  protected async askLLM<T = unknown>(promptText: string, jsonMode = true): Promise<T | string | null> {
     if (!this.llm) {
       throw new Error(`Agent ${this.config.id} has no LLM provider attached.`);
     }
@@ -62,7 +62,7 @@ export abstract class Agent {
     
     if (jsonMode) {
       try {
-        return JSON.parse(response);
+        return JSON.parse(response) as T;
       } catch (e) {
         console.error(`Agent ${this.config.id} failed to parse JSON from LLM:`, response);
         return null;

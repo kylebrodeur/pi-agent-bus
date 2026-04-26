@@ -1,7 +1,8 @@
 {
   "name": "pi-agent-bus-node",
-  "version": "0.1.1",
-  "description": "Agent orchestration runtime with MessageBus pub/sub coordination for the Pi coding agent ecosystem",
+  "version": "0.1.2",
+  "description": "Node.js runtime for pi-agent-bus — MessageBus, Agent base class, LLMProvider, TaskQueue",
+  "type": "commonjs",
   "homepage": "https://github.com/kylebrodeur/pi-agent-bus/tree/main/packages/pi-agent-bus-node#readme",
   "bugs": {
     "url": "https://github.com/kylebrodeur/pi-agent-bus/issues"
@@ -38,7 +39,9 @@
     "test": "node --test dist/test/*.test.js",
     "test:watch": "node --test --watch dist/test/*.test.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
