@@ -37,6 +37,9 @@
     "test": "tsx --test test/*.test.ts",
     "test:watch": "tsx --test --watch test/*.test.ts"
   },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*"
+  },
   "devDependencies": {
     "@mariozechner/pi-coding-agent": "^0.70.2",
     "@types/node": "^20.0.0",

@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "ledgers": {
+    "master": {
+      "path": "ledger/master.jsonl",
+      "schema": [
+        "id",
+        "domain",
+        "source",
+        "fact",
+        "tag",
+        "artifact"
+      ],
+      "dedupField": "fact"
+    },
+    "pending": {
+      "path": "ledger/pending.jsonl",
+      "schema": "master"
+    },
+    "context_events": {
+      "path": "ledger/context_events.jsonl",
+      "schema": [
+        "id",
+        "type",
+        "session_entry_id",
+        "content",
+        "timestamp",
+        "tags"
+      ],
+      "dedupField": "id"
+    }
+  },
+  "injectors": [
+    {
+      "name": "draft-context",
+      "regex": "draft\\s+(\\S+)",
+      "ledger": "master",
+      "filterField": "tag"
+    }
+  ],
+  "qmd": {
+    "binary": "qmd",
+    "defaultLimit": 5
+  },
+  "extensionCompatibility": {
+    "pi-context": {
+      "enabled": false
+    }
+  }
+}

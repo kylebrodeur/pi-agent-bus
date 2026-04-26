@@ -80,9 +80,15 @@ export default function (pi: ExtensionAPI) {
     busToPiLinkMappings: []
   };
 
+  // Resolve the extension's directory in a way that works whether loaded
+  // from npm package, symlink, or absolute path. process.cwd() is the
+  // user's project directory; __dirname should be the extension directory
+  // because Pi loads the file with standard CJS module context.
+  const EXT_DIR = __dirname;
+
   const agentManager = new BridgeAgentManager(
     path.join(process.cwd(), '.agents'), 
-    path.join(__dirname, '../pi-agent-bus-node/demos')
+    path.join(EXT_DIR, '../pi-agent-bus-node/demos')
   );
   const auditTool = new AuditTool(
     path.join(process.cwd(), '.agents'),
@@ -91,7 +97,7 @@ export default function (pi: ExtensionAPI) {
 
   function loadConfigFromFile(): BridgeConfig {
     try {
-      const configPath = path.join(__dirname, 'config.json');
+      const configPath = path.join(EXT_DIR, 'config.json');
       if (fs.existsSync(configPath)) {
         const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
         return {
@@ -108,7 +114,7 @@ export default function (pi: ExtensionAPI) {
 
   function saveConfigToFile(newConfig: BridgeConfig): void {
     try {
-      const configPath = path.join(__dirname, 'config.json');
+      const configPath = path.join(EXT_DIR, 'config.json');
       fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
     } catch (e: any) {
       console.error(`[PiBridge] Error saving config to file: ${e.message}`);
