@@ -44,16 +44,6 @@ describe('pi-agent-bus-bridge config', () => {
     assert.ok(types.includes('link:'), 'should declare link');
     assert.ok(types.includes('context:'), 'should declare context');
   });
-
-  it('should compile without errors', () => {
-    const distPath = path.join(PKG_ROOT, 'dist', 'index.js');
-    
-    // Build should have been run before tests
-    assert.ok(fs.existsSync(distPath), 'dist/index.js should exist after build');
-    
-    const compiled = fs.readFileSync(distPath, 'utf8');
-    assert.ok(compiled.length > 0, 'compiled output should not be empty');
-  });
 });
 
 describe('pi-agent-bus-bridge presets', () => {

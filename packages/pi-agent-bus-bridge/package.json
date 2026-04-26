@@ -26,25 +26,36 @@
     "bus",
     "event-driven"
   ],
-  "main": "dist/index.js",
+  "main": "index.ts",
   "files": [
-    "dist",
+    "index.ts",
+    "AgentManager.ts",
+    "AuditTool.ts",
+    "types/",
     "config.*.json",
     "README.md"
   ],
+  "pi": {
+    "extensions": [
+      "index.ts"
+    ]
+  },
   "scripts": {
-    "build": "tsup",
+    "build": "tsc --noEmit",
     "test": "tsx --test test/*.test.ts",
     "test:watch": "tsx --test --watch test/*.test.ts"
   },
   "peerDependencies": {
     "@mariozechner/pi-coding-agent": "*"
   },
+  "dependencies": {
+    "js-yaml": "^4.1.1",
+    "pi-agent-bus-node": "workspace:*"
+  },
   "devDependencies": {
     "@mariozechner/pi-coding-agent": "^0.70.2",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
-    "pi-agent-bus-node": "workspace:*",
-    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.0.0"
   }
