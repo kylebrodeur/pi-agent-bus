@@ -10,7 +10,7 @@ import {
   createReadTool,
   createWriteTool,
   type ExtensionAPI
-} from '@mariozechner/pi-coding-agent';
+} from '@earendil-works/pi-coding-agent';
 import * as path from 'path';
 import * as fs from 'fs';
 
